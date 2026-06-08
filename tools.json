@@ -1,0 +1,93 @@
+[
+  {
+    "category": null,
+    "name": "激活windows.bat",
+    "path": "2/激活windows.bat",
+    "size": 35,
+    "sizeText": "35 B"
+  },
+  {
+    "category": null,
+    "name": "网站跳转.txt",
+    "path": "2/网站跳转.txt",
+    "size": 301,
+    "sizeText": "301 B"
+  },
+  {
+    "category": "刷机与ROOT",
+    "name": "Lian-Payload-Flash-Tool.exe",
+    "path": "2/刷机与ROOT/Lian-Payload-Flash-Tool.exe",
+    "size": 8881189,
+    "sizeText": "8.5 MB"
+  },
+  {
+    "category": "刷机与ROOT",
+    "name": "刷机驱动（第一次刷机必须安装）.exe",
+    "path": "2/刷机与ROOT/刷机驱动（第一次刷机必须安装）.exe",
+    "size": 13716164,
+    "sizeText": "13.1 MB"
+  },
+  {
+    "category": "刷机与ROOT",
+    "name": "工具打不开安装这个.exe",
+    "path": "2/刷机与ROOT/工具打不开安装这个.exe",
+    "size": 59252736,
+    "sizeText": "56.5 MB"
+  },
+  {
+    "category": "刷机与ROOT",
+    "name": "画质改机型.zip",
+    "path": "2/刷机与ROOT/画质改机型.zip",
+    "size": 1909179,
+    "sizeText": "1.8 MB"
+  },
+  {
+    "category": "刷机与ROOT",
+    "name": "紫罗兰工具箱 V3.1.exe",
+    "path": "2/刷机与ROOT/紫罗兰工具箱 V3.1.exe",
+    "size": 30824091,
+    "sizeText": "29.4 MB"
+  },
+  {
+    "category": "常用工具",
+    "name": "7z2105 64bit.exe",
+    "path": "2/常用工具/7z2105 64bit.exe",
+    "size": 1522542,
+    "sizeText": "1.5 MB"
+  },
+  {
+    "category": "常用工具",
+    "name": "AirPlayer.exe",
+    "path": "2/常用工具/AirPlayer.exe",
+    "size": 14986240,
+    "sizeText": "14.3 MB"
+  },
+  {
+    "category": "常用工具",
+    "name": "LKY_OfficeTools.exe",
+    "path": "2/常用工具/LKY_OfficeTools.exe",
+    "size": 13476352,
+    "sizeText": "12.9 MB"
+  },
+  {
+    "category": "常用工具",
+    "name": "c++安装64位系统.exe",
+    "path": "2/常用工具/c++安装64位系统.exe",
+    "size": 36804608,
+    "sizeText": "35.1 MB"
+  },
+  {
+    "category": "常用工具",
+    "name": "win10辅助修复.exe",
+    "path": "2/常用工具/win10辅助修复.exe",
+    "size": 1624064,
+    "sizeText": "1.5 MB"
+  },
+  {
+    "category": "常用工具",
+    "name": "关闭Windows安全中心实时保护.exe",
+    "path": "2/常用工具/关闭Windows安全中心实时保护.exe",
+    "size": 1242112,
+    "sizeText": "1.2 MB"
+  }
+]
