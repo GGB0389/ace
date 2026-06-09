@@ -216,11 +216,97 @@ function setupNav() {
   });
 }
 
+function setupHeaderScroll() {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+  const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 20);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+}
+
+function setupNavSectionHighlight() {
+  const links = document.querySelectorAll(
+    ".nav-links a[href^='#'], .mobile-drawer a[href^='#']",
+  );
+  const sectionIds = [...new Set(
+    [...links]
+      .map((a) => a.getAttribute("href"))
+      .filter((href) => href && href.length > 1),
+  )];
+  const sections = sectionIds
+    .map((id) => document.querySelector(id))
+    .filter(Boolean);
+  if (!sections.length) return;
+
+  const setActive = (id) => {
+    links.forEach((a) => {
+      a.classList.toggle("is-active", a.getAttribute("href") === id);
+    });
+  };
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible.length) {
+        setActive(`#${visible[0].target.id}`);
+      }
+    },
+    { rootMargin: "-42% 0px -52% 0px", threshold: [0, 0.15, 0.4] },
+  );
+  sections.forEach((s) => io.observe(s));
+}
+
+function setupLiquidSpecular() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const targets = document.querySelectorAll(
+    ".liquid-glass, .glass-card, .promo-frame, .btn, .nav-links a, .stat",
+  );
+
+  targets.forEach((el) => {
+    el.addEventListener("mousemove", (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      el.style.setProperty("--lg-x", `${x}%`);
+      el.style.setProperty("--lg-y", `${y}%`);
+    });
+    el.addEventListener("mouseleave", () => {
+      el.style.setProperty("--lg-x", "50%");
+      el.style.setProperty("--lg-y", "20%");
+    });
+  });
+}
+
+function setupPromoTilt() {
+  const frame = document.querySelector(".promo-frame");
+  const visual = document.querySelector(".hero-visual");
+  if (!frame || !visual) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (window.matchMedia("(max-width: 900px)").matches) return;
+
+  visual.addEventListener("mousemove", (e) => {
+    const rect = visual.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    frame.style.transform = `perspective(900px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+  });
+  visual.addEventListener("mouseleave", () => {
+    frame.style.transform = "";
+  });
+}
+
 async function init() {
   applyReleaseLinks();
   await loadAppUpdateManifest();
   setupCopyButtons();
   setupNav();
+  setupNavSectionHighlight();
+  setupHeaderScroll();
+  setupLiquidSpecular();
+  setupPromoTilt();
 }
 
 init();

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="ACE游戏管家 — APK内核、和平存号备份、内置Root终端一体软件。自动更新内核与APP，自动过和平精英环境并刷入模块。官方下载站。" />
-  <meta name="theme-color" content="#060d1f" />
+  <meta name="theme-color" content="#e8f4ff" />
   <title>ACE游戏管家 · 官方下载</title>
   <link rel="icon" href="assets/icon.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,17 +12,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
+<body class="lg-clear lg-light">
+  <div class="bg-mesh" aria-hidden="true"></div>
   <div class="bg-grid" aria-hidden="true"></div>
-  <div class="bg-glow bg-glow-a" aria-hidden="true"></div>
-  <div class="bg-glow bg-glow-b" aria-hidden="true"></div>
+  <div class="bg-beam" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob-a" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob-b" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob-c" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob-d" aria-hidden="true"></div>
+  <div class="bg-grain" aria-hidden="true"></div>
 
-  <header class="site-header">
+  <header class="site-header liquid-glass">
     <a class="brand" href="#top">
       <img src="assets/icon.png" alt="" width="36" height="36" class="brand-icon" />
       <span>ACE游戏管家</span>
     </a>
     <nav class="nav-links">
+      <a href="#promo">宣传</a>
       <a href="#intro">简介</a>
       <a href="#app">下载</a>
       <a href="#tools-other">工具</a>
@@ -35,7 +41,8 @@
     </button>
   </header>
 
-  <div class="mobile-drawer" hidden>
+  <div class="mobile-drawer liquid-glass" hidden>
+    <a href="#promo">宣传</a>
     <a href="#intro">简介</a>
     <a href="#app">下载</a>
     <a href="#tools-other">工具</a>
@@ -46,9 +53,15 @@
 
   <main id="top">
     <section class="hero">
+      <div class="hero-ambient" aria-hidden="true"></div>
       <div class="hero-content">
-        <p class="eyebrow">ACE · OFFICIAL DOWNLOAD</p>
-        <h1>ACE游戏管家</h1>
+        <p class="eyebrow"><span class="eyebrow-pulse"></span> ACE · OFFICIAL DOWNLOAD</p>
+        <h1>
+          <span class="hero-title-text">
+            ACE游戏管家
+            <span class="hero-text-shine shine-sweep" aria-hidden="true"></span>
+          </span>
+        </h1>
         <p class="hero-desc">
           APK 内核、账号备份、内置终端三合一。自动更新内核与 APP，自带官方下载站；登录后自动过和平精英游戏环境，缺失模块一键刷入并重启。
         </p>
@@ -66,11 +79,32 @@
         </div>
       </div>
       <div class="hero-visual">
-        <div class="glass-card hero-card">
-          <img src="assets/icon.png" alt="ACE游戏管家图标" class="hero-logo" width="120" height="120" />
-          <p class="hero-card-title">ACE游戏管家</p>
-          <p class="hero-card-sub">内核自动更新 · 存号备份 · 模块自动安装 · 内置终端</p>
+        <div class="promo-tilt">
+          <div class="promo-frame">
+            <div class="promo-frame-glow" aria-hidden="true"></div>
+            <div class="promo-shine shine-sweep" aria-hidden="true"></div>
+            <img
+            src="assets/ACE游戏管家-宣传图-炫版.png"
+            alt="ACE游戏管家功能宣传图"
+            class="hero-promo-img"
+            width="720"
+            height="405"
+            loading="eager"
+          />
+          </div>
         </div>
+      </div>
+    </section>
+
+    <section class="section promo-full" id="promo">
+      <div class="promo-full-inner glass-card">
+        <div class="promo-full-shine" aria-hidden="true"></div>
+        <img
+          src="assets/ACE游戏管家-宣传图-炫版.png"
+          alt="ACE游戏管家 · GGB内核全功能"
+          class="promo-full-img"
+          loading="lazy"
+        />
       </div>
     </section>
 
@@ -315,11 +349,20 @@
   </main>
 
   <footer class="site-footer">
+    <div class="footer-line" aria-hidden="true"></div>
     <p>ACE游戏管家</p>
-    <p class="muted">上传整站目录到任意静态主机即可对外提供下载。</p>
   </footer>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="toast liquid-glass" id="toast" role="status" aria-live="polite"></div>
+
+  <svg class="lg-svg" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="lg-refraction" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="8" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
 
   <!-- 本地版本数据（发版时 sync-app-update-js.ps1 同步）；CDN 由 main.js 异步刷新，避免阻塞页面 -->
   <script src="js/app-release-local.js"></script>
