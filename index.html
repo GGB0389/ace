@@ -58,8 +58,8 @@
           <a class="btn btn-ghost btn-lg" href="#guide">安装说明</a>
         </div>
         <div class="hero-stats">
-          <div class="stat"><span class="stat-val" id="stat-app-ver">1.7.4</span><span class="stat-label">当前版本</span></div>
-          <div class="stat"><span class="stat-val" id="stat-app-size">—</span><span class="stat-label">安装包大小</span></div>
+          <div class="stat"><span class="stat-val" id="stat-app-ver">1.8.0</span><span class="stat-label">当前版本</span></div>
+          <div class="stat"><span class="stat-val" id="stat-app-size">65.4 MB</span><span class="stat-label">安装包大小</span></div>
           <div class="stat"><span class="stat-val">Android 10+</span><span class="stat-label">系统要求</span></div>
         </div>
       </div>
@@ -85,9 +85,9 @@
           </div>
           <h3>ACE游戏管家</h3>
           <p class="product-meta">
-            <span id="launcher-version">v1.7.4</span>
+            <span id="launcher-version">v1.8.0</span>
             <span class="dot">·</span>
-            <span id="launcher-size">—</span>
+            <span id="launcher-size">65.4 MB</span>
             <span class="dot">·</span>
             Android 10+
           </p>
@@ -245,6 +245,12 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <!-- 本地版本数据（发版时 sync-app-update-js.ps1 同步）；CDN 由 main.js 异步刷新，避免阻塞页面 -->
+  <script src="js/app-release-local.js"></script>
+  <script>
+    window.APP_UPDATE_SCRIPT_URL = "https://wang-bak.pages.dev/app-update.js";
+    window.APP_UPDATE_MANIFEST_URL = "https://wang-bak.pages.dev/app-update.json";
+  </script>
   <script src="js/releases-config.js"></script>
   <script src="js/external-links.js"></script>
   <script src="js/main.js"></script>

@@ -1,18 +1,29 @@
 const APP = {
-  version: "1.7.4",
+  version: "1.8.0",
   apk: "downloads/ACE.apk",
 };
 
+/** 与 CDN app-update.json 同步，不依赖 releases-config.js */
+const APP_UPDATE_MANIFEST_URL = "https://wang-bak.pages.dev/app-update.json";
+
 function formatBytes(bytes) {
-  if (!bytes || bytes <= 0) return "—";
+  const n = Number(bytes);
+  if (!Number.isFinite(n) || n <= 0) return "—";
   const units = ["B", "KB", "MB", "GB"];
-  let v = bytes;
+  let v = n;
   let i = 0;
   while (v >= 1024 && i < units.length - 1) {
     v /= 1024;
     i += 1;
   }
   return `${v.toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+}
+
+function resolveSizeText(data) {
+  if (data.sizeLabel && String(data.sizeLabel).trim()) {
+    return String(data.sizeLabel).trim();
+  }
+  return formatBytes(data.sizeBytes);
 }
 
 function absoluteUrl(path) {
@@ -36,34 +47,100 @@ function applyDownloadUrl(url) {
     link.target = "_blank";
     link.rel = "noopener noreferrer";
   });
-  document.querySelectorAll('[data-copy]').forEach((btn) => {
+  document.querySelectorAll("[data-copy]").forEach((btn) => {
     const card = btn.closest(".product-card.featured, .card-actions");
     if (card) btn.setAttribute("data-copy", url);
   });
 }
 
-function applyVersionSize(versionName, sizeBytes) {
+function applyVersionSize(versionName, sizeText) {
   const version = versionName || "—";
   document.getElementById("stat-app-ver")?.textContent = version;
   document.getElementById("launcher-version")?.textContent = `v${version}`;
-  const sizeText = formatBytes(sizeBytes);
-  document.getElementById("launcher-size")?.textContent = sizeText;
-  document.getElementById("stat-app-size")?.textContent = sizeText;
+  const size = sizeText || "—";
+  document.getElementById("launcher-size")?.textContent = size;
+  document.getElementById("stat-app-size")?.textContent = size;
+}
+
+function fetchManifestJson(url) {
+  const bust = `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`;
+  return fetch(bust, {
+    cache: "no-store",
+    mode: "cors",
+    credentials: "omit",
+  }).then((res) => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  });
+}
+
+function fetchManifestXhr(url) {
+  const bust = `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`;
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", bust, true);
+    xhr.responseType = "text";
+    xhr.onload = () => {
+      if (xhr.status < 200 || xhr.status >= 300) {
+        reject(new Error(`HTTP ${xhr.status}`));
+        return;
+      }
+      try {
+        resolve(JSON.parse(xhr.responseText));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    xhr.onerror = () => reject(new Error("network error"));
+    xhr.send();
+  });
+}
+
+function applyFromManifest(data) {
+  if (!data) return false;
+  applyVersionSize(data.versionName, resolveSizeText(data));
+  if (data.downloadUrl) applyDownloadUrl(data.downloadUrl);
+  return true;
+}
+
+function loadManifestScript(url) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`;
+    script.async = true;
+    script.onload = () => resolve(window.__APP_RELEASE_DATA || null);
+    script.onerror = () => reject(new Error("script load failed"));
+    document.head.appendChild(script);
+  });
 }
 
 async function loadAppUpdateManifest() {
-  const manifestUrl = window.APP_UPDATE_MANIFEST_URL;
+  // 本地 js/app-release-local.js 已在 main.js 之前同步注入
+  applyFromManifest(window.__APP_RELEASE_DATA);
+
+  const scriptUrl = window.APP_UPDATE_SCRIPT_URL || "https://wang-bak.pages.dev/app-update.js";
+  try {
+    const data = await loadManifestScript(scriptUrl);
+    applyFromManifest(data);
+  } catch (scriptErr) {
+    console.warn("app-update.js 加载失败，使用本地数据", scriptErr);
+  }
+
+  const manifestUrl =
+    window.APP_UPDATE_MANIFEST_URL || APP_UPDATE_MANIFEST_URL;
   if (!manifestUrl) return;
 
   try {
-    const res = await fetch(manifestUrl, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    const size = Number(data.sizeBytes) || 0;
-    applyVersionSize(data.versionName, size);
-    if (data.downloadUrl) applyDownloadUrl(data.downloadUrl);
-  } catch (err) {
-    console.warn("无法加载 app-update.json，版本/大小保持页面默认值", err);
+    const data = await fetchManifestJson(manifestUrl);
+    applyFromManifest(data);
+  } catch (fetchErr) {
+    console.warn("fetch 失败，尝试 XHR", fetchErr);
+    try {
+      const data = await fetchManifestXhr(manifestUrl);
+      applyFromManifest(data);
+    } catch (xhrErr) {
+      console.warn("无法加载 app-update.json", xhrErr);
+    }
   }
 }
 
