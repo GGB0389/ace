@@ -374,6 +374,26 @@ main {
 
 .feature-list li, .changelog li { margin-bottom: 0.35rem; }
 
+.feature-group-title {
+  margin: 1.1rem 0 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.feature-group-title:first-child { margin-top: 0; }
+
+.feature-list.columns-2 {
+  column-count: 2;
+  column-gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .feature-list.columns-2 { column-count: 1; }
+}
+
+.card-grid.single { grid-template-columns: 1fr; max-width: 720px; }
+
 .card-actions {
   display: flex;
   flex-wrap: wrap;
