@@ -1,5 +1,5 @@
 const APP = {
-  version: "1.5.6",
+  version: "1.7.4",
   apk: "downloads/ACE.apk",
 };
 
@@ -27,11 +27,49 @@ function releaseUrl(filename) {
   return `${cfg.base.replace(/\/$/, "")}/${encodeURIComponent(filename)}`;
 }
 
+function applyDownloadUrl(url) {
+  if (!url) return;
+  document.querySelectorAll(
+    "#hero-download, #launcher-download, .header-cta, .mobile-drawer a.btn-primary",
+  ).forEach((link) => {
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+  });
+  document.querySelectorAll('[data-copy]').forEach((btn) => {
+    const card = btn.closest(".product-card.featured, .card-actions");
+    if (card) btn.setAttribute("data-copy", url);
+  });
+}
+
+function applyVersionSize(versionName, sizeBytes) {
+  const version = versionName || "—";
+  document.getElementById("stat-app-ver")?.textContent = version;
+  document.getElementById("launcher-version")?.textContent = `v${version}`;
+  const sizeText = formatBytes(sizeBytes);
+  document.getElementById("launcher-size")?.textContent = sizeText;
+  document.getElementById("stat-app-size")?.textContent = sizeText;
+}
+
+async function loadAppUpdateManifest() {
+  const manifestUrl = window.APP_UPDATE_MANIFEST_URL;
+  if (!manifestUrl) return;
+
+  try {
+    const res = await fetch(manifestUrl, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const size = Number(data.sizeBytes) || 0;
+    applyVersionSize(data.versionName, size);
+    if (data.downloadUrl) applyDownloadUrl(data.downloadUrl);
+  } catch (err) {
+    console.warn("无法加载 app-update.json，版本/大小保持页面默认值", err);
+  }
+}
+
 function applyReleaseLinks() {
   const cfg = window.GITHUB_RELEASE;
   if (!cfg?.enabled || !cfg.base || cfg.base.includes("你的用户名")) return;
-
-  const fileSet = new Set(cfg.files || []);
 
   document.querySelectorAll("[data-copy]").forEach((btn) => {
     const path = btn.getAttribute("data-copy");
@@ -69,16 +107,6 @@ function showToast(message) {
   showToast._t = setTimeout(() => el.classList.remove("show"), 2400);
 }
 
-async function headSize(path) {
-  try {
-    const res = await fetch(path, { method: "HEAD" });
-    const len = res.headers.get("content-length");
-    return len ? Number(len) : 0;
-  } catch {
-    return 0;
-  }
-}
-
 function setupCopyButtons() {
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest("[data-copy]");
@@ -113,18 +141,7 @@ function setupNav() {
 
 async function init() {
   applyReleaseLinks();
-
-  document.getElementById("stat-app-ver")?.textContent = APP.version;
-  document.getElementById("launcher-version")?.textContent = `v${APP.version}`;
-
-  const apkUrl = releaseUrl("ACE.apk") || APP.apk;
-  const apkSize = await headSize(apkUrl);
-  if (apkSize > 0) {
-    const text = formatBytes(apkSize);
-    document.getElementById("launcher-size")?.textContent = text;
-    document.getElementById("stat-app-size")?.textContent = text;
-  }
-
+  await loadAppUpdateManifest();
   setupCopyButtons();
   setupNav();
 }

@@ -9,4 +9,8 @@ ACE游戏管家下载站
 
 蓝奏直链配置：js/external-links.js
 
+版本与安装包大小：自动读取
+  https://wang-bak.pages.dev/app-update.json
+只需更新 CDN 上该 JSON，重新部署官网代码一次后即可生效。
+
 ================================
