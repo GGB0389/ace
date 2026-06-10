@@ -1348,7 +1348,6 @@ main {
 
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; }
-  .hero-visual { order: -1; }
   .promo-tilt { max-width: 100%; margin: 0 auto; }
   .promo-frame { max-width: 100%; }
   .hero-promo-img { max-width: 100%; }
