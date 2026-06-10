@@ -299,15 +299,44 @@ function setupPromoTilt() {
 }
 
 function setupTouchFocusFix() {
-  if (!window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+  const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  if (!isTouch) return;
 
-  const selector = ".btn, .nav-links a, .mobile-drawer a, .nav-toggle, .brand, .header-cta";
+  document.documentElement.classList.add("is-touch");
+
+  const selector =
+    ".btn, .nav-links a, .mobile-drawer a, .nav-toggle, .brand, .header-cta, .card-actions a, .link-card a, .tool-dl-card a, [data-copy]";
+
+  const clearTapArtifacts = (target) => {
+    const el = target instanceof Element ? target.closest(selector) : null;
+    if (!(el instanceof HTMLElement)) return;
+
+    window.getSelection()?.removeAllRanges();
+    el.blur();
+  };
+
   document.addEventListener(
     "touchend",
     (e) => {
-      const el = e.target.closest(selector);
+      clearTapArtifacts(e.target);
+    },
+    { passive: true },
+  );
+
+  document.addEventListener(
+    "click",
+    (e) => {
+      clearTapArtifacts(e.target);
+    },
+    { passive: true },
+  );
+
+  document.addEventListener(
+    "touchstart",
+    (e) => {
+      const el = e.target instanceof Element ? e.target.closest(selector) : null;
       if (el instanceof HTMLElement) {
-        requestAnimationFrame(() => el.blur());
+        window.getSelection()?.removeAllRanges();
       }
     },
     { passive: true },
