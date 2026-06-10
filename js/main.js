@@ -38,14 +38,31 @@ function releaseUrl(filename) {
   return `${cfg.base.replace(/\/$/, "")}/${encodeURIComponent(filename)}`;
 }
 
+function isCoarseTouchDevice() {
+  return (
+    window.matchMedia("(pointer: coarse)").matches
+    || window.matchMedia("(max-width: 1024px)").matches
+    || "ontouchstart" in window
+  );
+}
+
+function applyExternalLinkTarget(link) {
+  // 平板/手机同页跳转，避免 Android 新开标签慢、二次点击
+  if (isCoarseTouchDevice()) {
+    link.removeAttribute("target");
+  } else {
+    link.target = "_blank";
+  }
+  link.rel = "noopener noreferrer";
+}
+
 function applyDownloadUrl(url) {
   if (!url) return;
   document.querySelectorAll(
     "#hero-download, #launcher-download, .header-cta, .mobile-drawer a.btn-primary",
   ).forEach((link) => {
     link.href = url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
+    applyExternalLinkTarget(link);
   });
   document.querySelectorAll("[data-copy]").forEach((btn) => {
     const card = btn.closest(".product-card.featured, .card-actions");
@@ -159,8 +176,7 @@ function applyReleaseLinks() {
     if (link) {
       link.href = url;
       link.removeAttribute("download");
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
+      applyExternalLinkTarget(link);
     }
     btn.setAttribute("data-copy", url);
   });
@@ -170,8 +186,7 @@ function applyReleaseLinks() {
     if (!url) return;
     link.href = url;
     link.removeAttribute("download");
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
+    applyExternalLinkTarget(link);
   });
 }
 
@@ -312,7 +327,11 @@ function setupTouchFocusFix() {
     if (!(el instanceof HTMLElement)) return;
 
     window.getSelection()?.removeAllRanges();
-    el.blur();
+
+    // 链接不 blur：Android 上 touchend/click 前 blur 会拖慢或吞掉跳转
+    if (el instanceof HTMLAnchorElement) return;
+
+    setTimeout(() => el.blur(), 0);
   };
 
   document.addEventListener(
@@ -326,6 +345,12 @@ function setupTouchFocusFix() {
   document.addEventListener(
     "click",
     (e) => {
+      const el =
+        e.target instanceof Element ? e.target.closest(selector) : null;
+      if (el instanceof HTMLAnchorElement) {
+        window.getSelection()?.removeAllRanges();
+        return;
+      }
       clearTapArtifacts(e.target);
     },
     { passive: true },
@@ -343,9 +368,9 @@ function setupTouchFocusFix() {
   );
 }
 
-async function init() {
+function init() {
   applyReleaseLinks();
-  await loadAppUpdateManifest();
+  applyFromManifest(window.__APP_RELEASE_DATA);
   setupCopyButtons();
   setupNav();
   setupNavSectionHighlight();
@@ -353,6 +378,7 @@ async function init() {
   setupLiquidSpecular();
   setupPromoTilt();
   setupTouchFocusFix();
+  loadAppUpdateManifest();
 }
 
 init();
