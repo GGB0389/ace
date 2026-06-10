@@ -298,6 +298,22 @@ function setupPromoTilt() {
   });
 }
 
+function setupTouchFocusFix() {
+  if (!window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+
+  const selector = ".btn, .nav-links a, .mobile-drawer a, .nav-toggle, .brand, .header-cta";
+  document.addEventListener(
+    "touchend",
+    (e) => {
+      const el = e.target.closest(selector);
+      if (el instanceof HTMLElement) {
+        requestAnimationFrame(() => el.blur());
+      }
+    },
+    { passive: true },
+  );
+}
+
 async function init() {
   applyReleaseLinks();
   await loadAppUpdateManifest();
@@ -307,6 +323,7 @@ async function init() {
   setupHeaderScroll();
   setupLiquidSpecular();
   setupPromoTilt();
+  setupTouchFocusFix();
 }
 
 init();

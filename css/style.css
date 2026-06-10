@@ -1000,14 +1000,55 @@ main {
   opacity: 0.35;
 }
 
-.btn:focus-visible {
-  outline: 2px solid rgba(0, 102, 255, 0.45);
-  outline-offset: 2px;
+/* 平板/手机：点击不出现选中框、焦点描边 */
+.btn,
+.nav-links a,
+.mobile-drawer a,
+.nav-toggle,
+.brand,
+.header-cta,
+.card-actions .btn,
+.link-card .btn,
+.tool-dl-card .btn {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 
-.nav-links a:focus-visible {
-  outline: 2px solid rgba(0, 102, 255, 0.4);
-  outline-offset: 2px;
+.btn::selection,
+.nav-links a::selection,
+.mobile-drawer a::selection {
+  background: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:focus-visible {
+    outline: 2px solid rgba(0, 102, 255, 0.45);
+    outline-offset: 2px;
+  }
+
+  .nav-links a:focus-visible {
+    outline: 2px solid rgba(0, 102, 255, 0.4);
+    outline-offset: 2px;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .btn:focus,
+  .btn:focus-visible,
+  .nav-links a:focus,
+  .nav-links a:focus-visible,
+  .mobile-drawer a:focus,
+  .mobile-drawer a:focus-visible,
+  .brand:focus,
+  .brand:focus-visible,
+  .nav-toggle:focus,
+  .nav-toggle:focus-visible,
+  .header-cta:focus,
+  .header-cta:focus-visible {
+    outline: none;
+  }
 }
 
 .btn-lg { padding: 0.88rem 1.55rem; font-size: 1rem; }
